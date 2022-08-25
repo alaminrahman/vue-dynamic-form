@@ -5,7 +5,7 @@
 
         <div v-for="item, index in form" :key="item">
           <h1>Item {{ index + 1 }}</h1>
-
+          {{item}}
           <div class="row" >
 
             <div class="col-sm-5">
@@ -19,12 +19,14 @@
             </div>
 
             <div class="col-md-2 pt-4">
-              <button class="btn btn-danger btn-sm m-1" @click="removeItem">x</button>
+              <button class="btn btn-danger btn-sm m-1" @click="removeItem(index)">x</button>
               <button class="btn btn-success btn-sm m-1" @click="addRow">+</button>
             </div>
 
           </div><!--End row-->
         </div> <!--End for-->
+
+        <button class="btn btn-primary" @click="saveItem">Save</button>
         
         
       </div>
@@ -35,6 +37,8 @@
 </template>
 
 <script>
+
+import axios from 'axios';
 import { reactive } from 'vue';
 
 export default {
@@ -49,9 +53,24 @@ export default {
       form.push({name:'', price: 0})
     }
 
+    const removeItem = (index) => {
+      if(form.length > 1) {
+        form.splice(index, 1)
+      }
+    }
+
+    const saveItem = () => {
+      axios.post('/items', form).then( res => {
+        console.log(res)
+        console.log('saved')
+      })
+    }
+
     return {
       form,
-      addRow
+      addRow,
+      removeItem,
+      saveItem,
     }
   }
 }
